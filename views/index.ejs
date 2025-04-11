@@ -1,0 +1,602 @@
+<%- include layouts/header.ejs %>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StreamLive - Transmisiones en vivo para eventos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* Estilos generales */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: #1a1a2e;
+            color: white;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #e94560;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 2rem;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: #e94560;
+        }
+        
+        .hero {
+            height: 80vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/api/placeholder/1200/800') center/cover no-repeat;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            padding: 0 20px;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin-bottom: 2rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: #e94560;
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #d13354;
+        }
+        
+        .servicios {
+            padding: 5rem 2rem;
+            background-color: white;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #1a1a2e;
+        }
+        
+        .servicios-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .servicio-card {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        
+        .servicio-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .servicio-img {
+            height: 200px;
+            width: 100%;
+            object-fit: cover;
+        }
+        
+        .servicio-content {
+            padding: 1.5rem;
+        }
+        
+        .servicio-content h3 {
+            margin-bottom: 1rem;
+            color: #1a1a2e;
+        }
+        
+        .eventos {
+            background-color: #f5f5f5;
+            padding: 5rem 2rem;
+        }
+        
+        .eventos-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .evento-card {
+            display: flex;
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .evento-img {
+            width: 30%;
+            object-fit: cover;
+        }
+        
+        .evento-detalles {
+            padding: 2rem;
+            flex: 1;
+        }
+        
+        .evento-fecha {
+            color: #e94560;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .evento-detalles h3 {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .boletos {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1.5rem;
+        }
+        
+        .precio {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .galeria {
+            padding: 5rem 2rem;
+            background-color: white;
+        }
+        
+        .galeria-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .galeria-item {
+            border-radius: 10px;
+            overflow: hidden;
+            height: 250px;
+        }
+        
+        .galeria-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+        
+        .galeria-item:hover .galeria-img {
+            transform: scale(1.1);
+        }
+        
+        .tienda {
+            padding: 5rem 2rem;
+            background-color: #f5f5f5;
+        }
+        
+        .productos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .producto-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .producto-img {
+            height: 200px;
+            width: 100%;
+            object-fit: cover;
+        }
+        
+        .producto-content {
+            padding: 1.5rem;
+        }
+        
+        .producto-precio {
+            color: #e94560;
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin: 0.5rem 0;
+        }
+        
+        .contacto {
+            padding: 5rem 2rem;
+            background-color: #1a1a2e;
+            color: white;
+        }
+        
+        .contacto-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .contacto-info {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .contacto-form {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 5px;
+            border: none;
+        }
+        
+        .form-group textarea {
+            min-height: 150px;
+        }
+        
+        footer {
+            background-color: #0f0f1b;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .social-icons {
+            margin: 1rem 0;
+        }
+        
+        .social-icons a {
+            color: white;
+            margin: 0 0.5rem;
+            font-size: 1.5rem;
+        }
+        
+        /* Responsividad */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .evento-card {
+                flex-direction: column;
+            }
+            
+            .evento-img {
+                width: 100%;
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sección Hero -->
+    <section id="inicio" class="hero">
+        <h1>Tu Evento, Nuestra Pasión</h1>
+        <p>Transformamos momentos ordinarios en experiencias extraordinarias. Especialistas en transmisiones en vivo con tecnología de última generación y un equipo profesional comprometido con la excelencia.</p>
+        <a href="#eventos" class="btn">Descubre Nuestros Eventos</a>
+    </section>
+    
+    <!-- Sección de Servicios -->
+    <section id="servicios" class="servicios">
+        <h2 class="section-title">Servicios Premium</h2>
+        <div class="servicios-grid">
+            <div class="servicio-card">
+                <img src="/api/placeholder/400/300" alt="Eventos deportivos" class="servicio-img">
+                <div class="servicio-content">
+                    <h3>Eventos Deportivos</h3>
+                    <p>Transmisiones profesionales con hasta 8 cámaras, repeticiones instantáneas, gráficos en vivo y análisis técnico. Ideal para torneos, partidos y competencias deportivas.</p>
+                </div>
+            </div>
+            
+            <div class="servicio-card">
+                <img src="/api/placeholder/400/300" alt="Conciertos" class="servicio-img">
+                <div class="servicio-content">
+                    <h3>Conciertos y Shows</h3>
+                    <p>Producción audiovisual de alta calidad con sonido multicanal, iluminación dinámica y transmisión 4K. Experiencia inmersiva para tu audiencia.</p>
+                </div>
+            </div>
+            
+            <div class="servicio-card">
+                <img src="/api/placeholder/400/300" alt="Teatro" class="servicio-img">
+                <div class="servicio-content">
+                    <h3>Teatro y Artes Escénicas</h3>
+                    <p>Capturamos la magia del teatro con cámaras robóticas, iluminación teatral y sonido envolvente. Perfecto para obras, musicales y espectáculos.</p>
+                </div>
+            </div>
+            
+            <div class="servicio-card">
+                <img src="/api/placeholder/400/300" alt="Eventos al aire libre" class="servicio-img">
+                <div class="servicio-content">
+                    <h3>Eventos al Aire Libre</h3>
+                    <p>Soluciones robustas para exteriores con tecnología inalámbrica, drones y cámaras resistentes a la intemperie. Ideal para festivales y eventos masivos.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Sección de Eventos -->
+    <section id="eventos" class="eventos">
+        <h2 class="section-title">Próximos Eventos</h2>
+        <div class="eventos-container">
+            <div class="evento-card">
+                <img src="/api/placeholder/600/400" alt="Festival de Jazz" class="evento-img">
+                <div class="evento-detalles">
+                    <div class="evento-fecha">15 de Abril, 2025 - 19:00</div>
+                    <h3>Festival Internacional de Jazz</h3>
+                    <p>Una noche mágica con los mejores músicos de jazz del mundo. Transmisión en vivo con 6 cámaras, sonido multicanal y entrevistas backstage.</p>
+                    <div class="boletos">
+                        <div class="precio">Desde $350</div>
+                        <a href="#" class="btn">Reservar ahora</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="evento-card">
+                <img src="/api/placeholder/600/400" alt="Torneo de eSports" class="evento-img">
+                <div class="evento-detalles">
+                    <div class="evento-fecha">22 de Abril, 2025 - 15:00</div>
+                    <h3>Campeonato Nacional de eSports</h3>
+                    <p>La competencia más importante del año con transmisión en 4K, análisis en tiempo real y estadísticas detalladas de cada partida.</p>
+                    <div class="boletos">
+                        <div class="precio">Desde $200</div>
+                        <a href="#" class="btn">Reservar ahora</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="evento-card">
+                <img src="/api/placeholder/600/400" alt="Teatro Musical" class="evento-img">
+                <div class="evento-detalles">
+                    <div class="evento-fecha">1-3 de Mayo, 2025 - 20:00</div>
+                    <h3>Musical "El Fantasma de la Ópera"</h3>
+                    <p>Una producción espectacular con transmisión multicámara, subtítulos en vivo y sonido orquestal de alta fidelidad.</p>
+                    <div class="boletos">
+                        <div class="precio">Desde $400</div>
+                        <a href="#" class="btn">Reservar ahora</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Sección de Galería -->
+    <section id="galeria" class="galeria">
+        <h2 class="section-title">Momentos Destacados</h2>
+        <div class="galeria-grid">
+            <div class="galeria-item">
+                <img src="/api/placeholder/400/400" alt="Concierto de Jazz" class="galeria-img">
+                <div class="galeria-overlay">
+                    <h3>Festival de Jazz 2024</h3>
+                    <p>Transmisión en vivo</p>
+                </div>
+            </div>
+            <div class="galeria-item">
+                <img src="/api/placeholder/400/400" alt="Torneo de eSports" class="galeria-img">
+                <div class="galeria-overlay">
+                    <h3>eSports Championship</h3>
+                    <p>Competencia nacional</p>
+                </div>
+            </div>
+            <div class="galeria-item">
+                <img src="/api/placeholder/400/400" alt="Teatro Musical" class="galeria-img">
+                <div class="galeria-overlay">
+                    <h3>Teatro en Vivo</h3>
+                    <p>Producción musical</p>
+                </div>
+            </div>
+            <div class="galeria-item">
+                <img src="/api/placeholder/400/400" alt="Festival de Arte" class="galeria-img">
+                <div class="galeria-overlay">
+                    <h3>Festival de Arte</h3>
+                    <p>Exhibición digital</p>
+                </div>
+            </div>
+            <div class="galeria-item">
+                <img src="/api/placeholder/400/400" alt="Conferencia Tech" class="galeria-img">
+                <div class="galeria-overlay">
+                    <h3>Tech Conference</h3>
+                    <p>Innovación en vivo</p>
+                </div>
+            </div>
+            <div class="galeria-item">
+                <img src="/api/placeholder/400/400" alt="Deportes" class="galeria-img">
+                <div class="galeria-overlay">
+                    <h3>Deportes</h3>
+                    <p>Transmisión HD</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Sección de Tienda -->
+    <section id="tienda" class="tienda">
+        <h2 class="section-title">Tienda Oficial</h2>
+        <div class="productos-grid">
+            <div class="producto-card">
+                <img src="/api/placeholder/400/400" alt="Pase VIP" class="producto-img">
+                <div class="producto-content">
+                    <h3>Pase VIP Anual</h3>
+                    <p>Acceso ilimitado a todas las transmisiones en vivo del año con contenido exclusivo y entrevistas backstage.</p>
+                    <div class="producto-precio">$999</div>
+                    <a href="#" class="btn">Obtener pase</a>
+                </div>
+            </div>
+            
+            <div class="producto-card">
+                <img src="/api/placeholder/400/400" alt="Kit Streaming" class="producto-img">
+                <div class="producto-content">
+                    <h3>Kit Streaming Premium</h3>
+                    <p>Todo lo necesario para disfrutar de las transmisiones en la mejor calidad: auriculares, webcam y micrófono.</p>
+                    <div class="producto-precio">$450</div>
+                    <a href="#" class="btn">Comprar kit</a>
+                </div>
+            </div>
+            
+            <div class="producto-card">
+                <img src="/api/placeholder/400/400" alt="Memorabilia" class="producto-img">
+                <div class="producto-content">
+                    <h3>Colección Memorabilia</h3>
+                    <p>Set exclusivo con camiseta, póster y DVD de los mejores momentos de nuestros eventos.</p>
+                    <div class="producto-precio">$280</div>
+                    <a href="#" class="btn">Añadir al carrito</a>
+                </div>
+            </div>
+            
+            <div class="producto-card">
+                <img src="/api/placeholder/400/400" alt="Gift Card" class="producto-img">
+                <div class="producto-content">
+                    <h3>Gift Card Premium</h3>
+                    <p>La regalo perfecto: acceso a transmisiones en vivo y contenido exclusivo por 6 meses.</p>
+                    <div class="producto-precio">$299</div>
+                    <a href="#" class="btn">Comprar gift card</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Sección de Contacto -->
+    <section id="contacto" class="contacto">
+        <h2 class="section-title" style="color: white;">Contáctanos</h2>
+        <div class="contacto-container">
+            <div class="contacto-info">
+                <h3>¿Listo para tu próximo evento?</h3>
+                <p>Nuestro equipo está aquí para ayudarte a crear una experiencia inolvidable. Contáctanos para una consulta personalizada y descubre cómo podemos llevar tu evento al siguiente nivel.</p>
+                <p><strong>Oficina Central:</strong> Av. Tecnología #789, Ciudad Digital</p>
+                <p><strong>Teléfono:</strong> +1 (555) 123-4567</p>
+                <p><strong>Email:</strong> eventos@streamlive.com</p>
+                <p><strong>Horario:</strong> Lun-Vie: 9:00 - 18:00</p>
+            </div>
+            
+            <div class="contacto-form">
+                <h3>Envíanos un mensaje</h3>
+                <form>
+                    <div class="form-group">
+                        <label for="nombre">Nombre completo</label>
+                        <input type="text" id="nombre" required placeholder="Tu nombre">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" required placeholder="tu@email.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="asunto">Tipo de Evento</label>
+                        <select id="asunto" required>
+                            <option value="">Selecciona un tipo de evento</option>
+                            <option value="deportes">Evento Deportivo</option>
+                            <option value="concierto">Concierto</option>
+                            <option value="teatro">Teatro</option>
+                            <option value="conferencia">Conferencia</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="mensaje">Detalles del evento</label>
+                        <textarea id="mensaje" required placeholder="Cuéntanos sobre tu evento..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn">Enviar consulta</button>
+                </form>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="logo">StreamLive</div>
+        <p>Transformando eventos en experiencias digitales inolvidables</p>
+        <div class="social-icons">
+            <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+        </div>
+        <p>&copy; 2025 StreamLive. Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html>
+<%- include layouts/footer.ejs %>
